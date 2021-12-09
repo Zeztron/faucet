@@ -1,8 +1,13 @@
 import contract from '@truffle/contract';
 
-export const loadContract = async (contractName) => {
+export const loadContract = async (contractName, provider) => {
   const response = await fetch(`/contracts/${contractName}.json`);
   const artifact = await response.json();
 
-  return contract(artifact);
+  const _contract = contract(artifact);
+  _contract.setProvider(provider);
+
+  const deployedContract = await _contract.deployed();
+
+  return deployedContract;
 };
