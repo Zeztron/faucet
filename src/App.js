@@ -12,6 +12,9 @@ const App = () => {
   });
   const [account, setAccount] = useState(null);
   const [balance, setBalance] = useState(null);
+  const [reload, setReload] = useState(false);
+
+  const reloadUI = useCallback(() => setReload(!reload), [reload]);
 
   useEffect(() => {
     const loadProvider = async () => {
@@ -49,7 +52,7 @@ const App = () => {
     };
 
     web3Api.contract && loadBalance();
-  }, [web3Api]);
+  }, [web3Api, reload]);
 
   const connectMetamask = () =>
     web3Api.provider.request({ method: 'eth_requestAccounts' });
@@ -60,7 +63,18 @@ const App = () => {
       from: account,
       value: web3.utils.toWei('1', 'ether'),
     });
-  }, [web3Api, account]);
+
+    reloadUI();
+  }, [web3Api, account, reloadUI]);
+
+  const withdrawFunds = async () => {
+    const { contract, web3 } = web3Api;
+    await contract.withdraw(web3.utils.toWei('0.1', 'ether'), {
+      from: account,
+    });
+
+    reloadUI();
+  };
 
   return (
     <>
@@ -86,7 +100,9 @@ const App = () => {
           <button onClick={addFunds} className="button is-link mr-2">
             Donate 1 ETH
           </button>
-          <button className="button is-primary">Withdraw</button>
+          <button onClick={withdrawFunds} className="button is-primary">
+            Withdraw
+          </button>
         </div>
       </div>
     </>
