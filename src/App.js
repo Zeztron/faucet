@@ -101,11 +101,18 @@ const App = () => {
           <div className="balance-view is-size-2 my-5">
             Current Balance: <strong>{balance}</strong> ETH
           </div>
-
-          <button onClick={addFunds} className="button is-link mr-2">
+          <button
+            disabled={!account}
+            onClick={addFunds}
+            className="button is-link mr-2"
+          >
             Donate 1 ETH
           </button>
-          <button onClick={withdrawFunds} className="button is-primary">
+          <button
+            disabled={!account}
+            onClick={withdrawFunds}
+            className="button is-primary"
+          >
             Withdraw
           </button>
         </div>
